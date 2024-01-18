@@ -11,7 +11,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request){
+    public function register(RegisterRequest $request)
+    {
 
         $user = User::create([
             'name' => $request->name,
@@ -23,20 +24,40 @@ class AuthController extends Controller
 
         return response()->json(compact('user','token'),201);
 
+
+
+        // {
+        //     try {
+        //         $user = User::create([
+        //             'name' => $request->name,
+        //             'email' => $request->email,
+        //             'password' => bcrypt($request->password)
+        //         ]);
+
+        //         $token = JWTAuth::fromUser($user);
+        //         return response()->json(compact('user', 'token'), 201);
+        //     } catch (\Exception $e) {
+        //         return response()->json(['error' => 'Internal Server Error'], 500);
+        //         // return response()->json(['error' => 'Internal Server Error', 'message' => $e->getMessage()], 500);
+
+        //     }
+        // }
+
         // return response()->json([
         //     'message' => 'Register Success'
         // ], 200);
     }
 
-    public function login(LoginRequest $request){
+    public function login(LoginRequest $request)
+    {
 
         $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)){
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'invalid_credentials'], 401);
         }
 
-        $user = User::where('email',$request->email)->first();
-        return response()->json(compact('user','token'),200);
+        $user = User::where('email', $request->email)->first();
+        return response()->json(compact('user', 'token'), 200);
     }
 }
