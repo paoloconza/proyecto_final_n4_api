@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -14,15 +16,20 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
 
+       try {
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'password' => Hash::make($request->password),
+            'rol_id' => $request->rol_id,
         ]);
 
         $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user','token'),201);
+       } catch (Exception $e) {
+        return response()->json(["message" => $e->getMessage()]);
+       }
 
 
 
