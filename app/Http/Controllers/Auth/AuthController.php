@@ -13,24 +13,50 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        $data = User::all();
+        return response()->json($data);
+    }
+
     public function register(RegisterRequest $request)
     {
 
-       try {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'rol_id' => $request->rol_id,
-        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'rol_id' => $request->rol_id,
+            ]);
 
-        $token = JWTAuth::fromUser($user);
+            $token = JWTAuth::fromUser($user);
 
-        return response()->json(compact('user','token'),201);
-       } catch (Exception $e) {
-        return response()->json(["message" => $e->getMessage()]);
-       }
+            return response()->json(compact('user', 'token'), 201);
+        } catch (Exception $e) {
+            return response()->json(["message" => $e->getMessage()]);
+        }
 
+        // try {
+        //     $userData = [
+        //         'name' => $request->name,
+        //         'email' => $request->email,
+        //         'password' => Hash::make($request->password),
+        //     ];
+
+        //     // Añade rol_id solo si está presente en la solicitud
+        //     if ($request->has('rol_id')) {
+        //         $userData['rol_id'] = $request->rol_id;
+        //     }
+
+        //     $user = User::create($userData);
+
+        //     $token = JWTAuth::fromUser($user);
+
+        //     return response()->json(compact('user', 'token'), 201);
+        // } catch (Exception $e) {
+        //     return response()->json(["message" => $e->getMessage()]);
+        // }
 
 
         // {

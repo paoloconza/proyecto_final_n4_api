@@ -12,7 +12,8 @@ class EnlaceController extends Controller
      */
     public function index()
     {
-        //
+        $data = Enlace::all();
+        return response()->json($data);
     }
 
     /**
